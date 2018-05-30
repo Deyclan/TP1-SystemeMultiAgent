@@ -1,34 +1,60 @@
 import map.Map;
+import messaging.MessageBox;
 import utils.Direction;
 import utils.Position;
 
 public class Agent extends Thread {
 
     private Map map;
+    private MessageBox messageBox;
     private Position current;
     private Position endPoint;
+    private int idAgent;
 
-    public Agent(Map map){
+    public Agent(int idAgent, Map map, MessageBox messageBox){
+        this.idAgent = idAgent;
         this.map = map;
+        this.messageBox = messageBox;
     }
 
     private void move(Direction direction){
+        Position tempPos = new Position();
         switch (direction){
             case UP:
-                if(isMoveAvailable(direction))
-                    current.setY(current.getY()-1);
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX());
+                    tempPos.setY(current.getY() - 1);
+                    if(map.move(current, tempPos)){ // On tente de bouger sur la grille
+                        current = tempPos;
+                    }
+                }
                 break;
             case RIGHT:
-                if(isMoveAvailable(direction))
-                    current.setX(current.getX()+1);
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX()+1);
+                    tempPos.setY(current.getY());
+                    if(map.move(current, tempPos)){
+                        current = tempPos;
+                    }
+                }
                 break;
             case DOWN:
-                if(isMoveAvailable(direction))
-                    current.setY(current.getY()+1);
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX());
+                    tempPos.setY(current.getY() + 1);
+                    if(map.move(current, tempPos)){
+                        current = tempPos;
+                    }
+                }
                 break;
             case LEFT:
-                if(isMoveAvailable(direction))
-                    current.setX(current.getX()-1);
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX() - 1);
+                    tempPos.setY(current.getY());
+                    if(map.move(current, tempPos)){
+                        current = tempPos;
+                    }
+                }
                 break;
             default:
                     // ne bouge pas
@@ -63,5 +89,6 @@ public class Agent extends Thread {
                 return false;
         }
     }
+
 
 }
