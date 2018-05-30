@@ -15,12 +15,23 @@ public class Agent extends Thread {
     private void move(Direction direction){
         switch (direction){
             case UP:
+                if(isMoveAvailable(direction))
+                    current.setY(current.getY()-1);
                 break;
             case RIGHT:
+                if(isMoveAvailable(direction))
+                    current.setX(current.getX()+1);
                 break;
             case DOWN:
+                if(isMoveAvailable(direction))
+                    current.setY(current.getY()+1);
                 break;
             case LEFT:
+                if(isMoveAvailable(direction))
+                    current.setX(current.getX()-1);
+                break;
+            default:
+                    // ne bouge pas
                 break;
         }
     }
