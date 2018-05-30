@@ -1,7 +1,6 @@
 package messaging;
 
-import sun.management.Agent;
-
+import agent.Agent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,4 +27,13 @@ public class MessageBox {
         }
         return instance;
     }
+
+    public synchronized void sendMessage(int idAgent, Message message){
+        Box.get(idAgent).add(message);
+    }
+
+    public synchronized ArrayList<Message> getMessage(int idAgent){
+        return Box.get(idAgent);
+    }
+
 }

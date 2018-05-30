@@ -1,5 +1,9 @@
+package agent;
+
 import map.Map;
+import messaging.Message;
 import messaging.MessageBox;
+import messaging.MessageType;
 import utils.Direction;
 import utils.Position;
 
@@ -64,31 +68,62 @@ public class Agent extends Thread {
 
     private boolean isMoveAvailable(Direction direction){
         Position tempPos = new Position();
+        Agent agent;
         switch (direction){
             case UP:
                 tempPos.setX(current.getX());
                 tempPos.setY(current.getY()-1);
-                return tempPos.getY() >= 0 && map.getPosition(tempPos) == null;
+                if (tempPos.getY() < 0 ) {
+                    return false;
+                }
+                if ((agent = map.getPosition(tempPos)) != null){
+                    messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
+                    return false;
+                }
+                return true;
 
             case RIGHT:
                 tempPos.setX(current.getX()+1);
                 tempPos.setY(current.getY());
-                return tempPos.getX() < map.getSize() && map.getPosition(tempPos) == null;
+                if (tempPos.getX() >= map.getSize() ) {
+                    return false;
+                }
+                if ((agent = map.getPosition(tempPos)) != null){
+                    messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
+                    return false;
+                }
+                return true;
 
             case DOWN:
                 tempPos.setX(current.getX());
                 tempPos.setY(current.getY()+1);
-                return tempPos.getY() < map.getSize() && map.getPosition(tempPos) == null;
+                if (tempPos.getY() >= map.getSize()) {
+                    return false;
+                }
+                if ((agent = map.getPosition(tempPos)) != null){
+                    messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
+                    return false;
+                }
+                return true;
 
             case LEFT:
                 tempPos.setX(current.getX()-1);
                 tempPos.setY(current.getY());
-                return tempPos.getX() >= 0 && map.getPosition(tempPos) == null;
+                if (tempPos.getX() < 0 ) {
+                    return false;
+                }
+                if ((agent = map.getPosition(tempPos)) != null){
+                    messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
+                    return false;
+                }
+                return true;
 
             default:
                 return false;
         }
     }
 
-
+    public int getIdAgent() {
+        return idAgent;
+    }
 }

@@ -1,9 +1,7 @@
 package map;
 
-import sun.management.Agent;
+import agent.Agent;
 import utils.Position;
-
-import java.util.ArrayList;
 
 public class Map {
 
