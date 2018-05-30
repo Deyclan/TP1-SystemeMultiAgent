@@ -1,5 +1,6 @@
 package agent;
 
+import javafx.scene.paint.Color;
 import map.Map;
 import messaging.Message;
 import messaging.MessageBox;
@@ -14,11 +15,19 @@ public class Agent extends Thread {
     private Position current;
     private Position endPoint;
     private int idAgent;
+    private Color agentColor = Color.GRAY;
 
     public Agent(int idAgent, Map map, MessageBox messageBox){
         this.idAgent = idAgent;
         this.map = map;
         this.messageBox = messageBox;
+    }
+
+    public Agent(int idAgent, Map map, MessageBox messageBox, Color color){
+        this.idAgent = idAgent;
+        this.map = map;
+        this.messageBox = messageBox;
+        this.agentColor = color;
     }
 
     private void move(Direction direction){
@@ -125,5 +134,21 @@ public class Agent extends Thread {
 
     public int getIdAgent() {
         return idAgent;
+    }
+
+    public Color getAgentColor() {
+        return agentColor;
+    }
+
+    public void setAgentColor(Color agentColor) {
+        this.agentColor = agentColor;
+    }
+
+    public void setCurrentPosition(Position current) {
+        this.current = current;
+    }
+
+    public void setEndPoint(Position endPoint) {
+        this.endPoint = endPoint;
     }
 }

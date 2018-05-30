@@ -3,7 +3,10 @@ package map;
 import agent.Agent;
 import utils.Position;
 
-public class Map {
+import java.util.List;
+import java.util.Observable;
+
+public class Map extends Observable{
 
     public static Map instance;
     private int size;
@@ -12,6 +15,7 @@ public class Map {
 
     private Map(int size){
         this.size = size;
+        grille = new Agent[size][size];
         // Création de la grille vide
         for (int x=0; x < size ; x++){
             for (int y=0; y<size ; y++){
@@ -27,7 +31,7 @@ public class Map {
         return instance;
     }
 
-    private Agent[][] getGrille() {
+    public Agent[][] getGrille() {
         return grille;
     }
 
@@ -54,5 +58,15 @@ public class Map {
         setPosition(agentDestPos, current);
         setPosition(agentCurrentPos, dest);
         return true;
+    }
+
+    public void addAgentList(List<Agent> agents){
+        for (Agent agent : agents) {
+            addAgent(agent);
+        }
+    }
+
+    public void addAgent(Agent agent){
+
     }
 }
