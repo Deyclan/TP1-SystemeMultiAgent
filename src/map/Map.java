@@ -1,25 +1,43 @@
 package map;
 
 import sun.management.Agent;
+import utils.Position;
 
 import java.util.ArrayList;
 
 public class Map {
 
-    public ArrayList<ArrayList<Agent>> grille;
+    public static Map instance;
+    private int size;
 
+    private Agent[][] grille;
 
-    public Map(int size){
-
+    private Map(int size){
+        this.size = size;
         // Création de la grille vide
-        grille = new ArrayList<>();
         for (int x=0; x < size ; x++){
-            ArrayList<Agent> temp = new ArrayList<Agent>();
             for (int y=0; y<size ; y++){
-                temp.add(null);
+                grille[x][y] = null;
             }
-            grille.add(temp);
         }
     }
 
+    public static Map getInstance(int size) {
+        if (instance == null){
+            return new Map(size);
+        }
+        return instance;
+    }
+
+    private Agent[][] getGrille() {
+        return grille;
+    }
+
+    public Agent getPosition(Position position){
+        return grille[position.getX()][position.getY()];
+    }
+
+    public int getSize() {
+        return size;
+    }
 }

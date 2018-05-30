@@ -1,27 +1,15 @@
-import java.util.ArrayList;
+import map.Map;
+
 
 public class Main {
 
     public static int GRID_SIZE = 5;
-    public static ArrayList<ArrayList<Agent>> grille;
+    public static Map MAP;
 
     public static void main(String[] args) {
-        createGrid();
+        MAP = Map.getInstance(GRID_SIZE);
 
     }
 
-    private static void createGrid(){
-        // Création de la grille
-        grille = new ArrayList<>();
-        for (int x=0; x < GRID_SIZE ; x++){
-            ArrayList<Agent> temp = new ArrayList<Agent>();
-            temp.add(null);
-            temp.add(null);
-            temp.add(null);
-            temp.add(null);
-            temp.add(null);
-            grille.add(temp);
-        }
-    }
 
 }
