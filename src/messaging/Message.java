@@ -18,5 +18,7 @@ public class Message {
         this.posToFree = posToFree;
     }
 
-
+    public MessageType getMessageType() {
+        return messageType;
+    }
 }

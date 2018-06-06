@@ -1,8 +1,6 @@
 package map;
 
 import agent.Agent;
-import javafx.application.Platform;
-import javafx.geometry.Pos;
 import utils.Position;
 
 import java.util.List;
@@ -79,23 +77,13 @@ public class Map extends Observable {
         }
     }
 
-    public void startAgents(){
+    public void startAgents(long betweenLaunchMillis){
         for (int x=0 ; x<grille.length ; x++) {
             for (int y=0 ; y<grille.length ; y++){
                 if (grille[x][y] != null){
-                    grille[x][y].start();
-                }
-            }
-        }
-    }
-
-    public synchronized void startAgents(long betweenLaunchMillis){
-        for (int x=0 ; x<grille.length ; x++) {
-            for (int y=0 ; y<grille.length ; y++){
-                if (grille[x][y] != null){
-                    grille[x][y].start();
                     try {
                         Thread.sleep(betweenLaunchMillis);
+                        grille[x][y].start();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

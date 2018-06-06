@@ -21,6 +21,7 @@ public class Agent extends Thread {
     private Position endPoint;
     private int idAgent;
     private Color agentColor = Color.GRAY;
+    private ArrayList<Message> agentBox;
 
     public Agent(int idAgent, Map map, MessageBox messageBox){
         this.idAgent = idAgent;
@@ -40,6 +41,13 @@ public class Agent extends Thread {
         super.run();
         synchronized (this) {
             while (true) {
+                agentBox = messageBox.getBox().get(this.idAgent);
+                if (agentBox.size() != 0){
+                    Message message = agentBox.get(0);
+                    if (message.getMessageType().equals(MessageType.REQUEST)){
+
+                    }
+                }
                 if (current.isEqual(endPoint)) {
                     // TODO : Move si y'a des demandes
                     System.out.println("Agent "+this.getIdAgent()+" Arrived");
@@ -123,7 +131,7 @@ public class Agent extends Thread {
     public Position getWorthAvailableMove(){
         List<Position> positions = getAvailableMoves();
         Comparator<Position> ComparePosToEndPoint = Comparator.comparing(p -> p.distEuclidienne(endPoint));
-        return positions.stream().max(ComparePosToEndPoint).get();
+        return positions.stream().min(ComparePosToEndPoint).get();
     }
 
     public Direction posToDir(Position position){
@@ -153,13 +161,13 @@ public class Agent extends Thread {
         if(isMoveAvailable(Direction.DOWN)){
             positions.add(new Position(current.getX()+1, current.getY()));
         }
-        else if(isMoveAvailable(Direction.RIGHT)){
+        if(isMoveAvailable(Direction.RIGHT)){
             positions.add(new Position(current.getX(), current.getY()+1));
         }
-        else if(isMoveAvailable(Direction.UP)) {
+        if(isMoveAvailable(Direction.UP)) {
             positions.add(new Position(current.getX()-1, current.getY()));
         }
-        else if(isMoveAvailable(Direction.LEFT)){
+        if(isMoveAvailable(Direction.LEFT)){
             positions.add(new Position(current.getX(), current.getY()-1));
         }
         return positions;
