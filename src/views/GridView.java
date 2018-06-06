@@ -23,12 +23,19 @@ public class GridView extends Stage {
     private final int graphicWidth = 600 ;
     private final int graphicHeigh = 650 ;
 
+    private final int widthOffset = 75 ;
+    private final int heightOffset = 50 ;
+
+    private final int lineCorrection = 2;
+    private final int rectPosCorrection = 4;
+    private final int rectSizeCorrection = 2*rectPosCorrection;
+
     private int tailleRect;
 
     public GridView(Map map){
 
         this.map = map;
-        tailleRect = Math.floorDiv(graphicHeigh, map.getSize())-1;
+        tailleRect = Math.floorDiv(graphicHeigh, map.getSize());
         map.addObserver(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
@@ -38,8 +45,8 @@ public class GridView extends Stage {
 
         this.grid = new Pane();
         this.mainPane = new Pane();
-        this.setHeight(graphicHeigh);
-        this.setWidth(graphicWidth);
+        this.setHeight(graphicHeigh + heightOffset);
+        this.setWidth(graphicWidth + widthOffset);
 
         grid.setPadding(new Insets(5));
         grid.setPrefSize(map.getSize()*tailleRect,map.getSize()*tailleRect);
@@ -50,7 +57,7 @@ public class GridView extends Stage {
 
         this.mainGroup = new Group(grid);
         this.mainPane.getChildren().add(mainGroup);
-        this.scene = new Scene(mainPane, graphicWidth, graphicHeigh);
+        this.scene = new Scene(mainPane, graphicWidth , graphicHeigh);
 
         fillPane();
         this.setScene(scene);
@@ -65,9 +72,9 @@ public class GridView extends Stage {
         for (int line = 0; line < map.getSize(); line++ ) {
             for (int col = 0; col < map.getSize(); col++) {
                 if (map.getGrille()[line][col] != null){
-                    Rectangle rectangle = new Rectangle(tailleRect,tailleRect);
-                    rectangle.setX((col*tailleRect)+1);
-                    rectangle.setY((line*tailleRect)+1);
+                    Rectangle rectangle = new Rectangle(tailleRect - rectSizeCorrection,tailleRect - rectSizeCorrection);
+                    rectangle.setX((col*tailleRect)+rectPosCorrection);
+                    rectangle.setY((line*tailleRect)+rectPosCorrection);
                     rectangle.setFill(map.getGrille()[line][col].getAgentColor());
                     grid.getChildren().addAll(rectangle);
                 }
@@ -82,10 +89,10 @@ public class GridView extends Stage {
         for (int x=1 ; x<map.getSize() ; x++){
             Rectangle rectangle = new Rectangle();
             rectangle.setStroke(Color.GRAY);
-            rectangle.setWidth(1);
-            rectangle.setHeight(grid.getPrefHeight());
+            rectangle.setWidth(0);
+            rectangle.setHeight(grid.getPrefHeight() - lineCorrection);
             rectangle.setLayoutY(1);
-            rectangle.setLayoutX((x*sizeToOrdonnee)-1);
+            rectangle.setLayoutX((x*sizeToOrdonnee));
             rectangle.setFill(Color.GRAY);
             grid.getChildren().add(rectangle);
         }
@@ -93,10 +100,10 @@ public class GridView extends Stage {
         for (int x=1 ; x<map.getSize() ; x++){
             Rectangle rectangle = new Rectangle();
             rectangle.setStroke(Color.GRAY);
-            rectangle.setWidth(grid.getPrefWidth());
-            rectangle.setHeight(1);
+            rectangle.setWidth(grid.getPrefWidth() - lineCorrection);
+            rectangle.setHeight(0);
             rectangle.setLayoutX(1);
-            rectangle.setLayoutY((x*sizeToAbscisse)-1);
+            rectangle.setLayoutY((x*sizeToAbscisse));
             rectangle.setFill(Color.GRAY);
             grid.getChildren().add(rectangle);
         }

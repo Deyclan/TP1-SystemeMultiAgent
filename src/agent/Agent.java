@@ -30,6 +30,10 @@ public class Agent extends Thread {
         this.agentColor = color;
     }
 
+
+    /**
+     *  Movement Methods
+     */
     private void move(Direction direction){
         Position tempPos = new Position();
         switch (direction){
@@ -132,22 +136,16 @@ public class Agent extends Thread {
         }
     }
 
-    public int getIdAgent() {
-        return idAgent;
-    }
 
-    public Color getAgentColor() {
-        return agentColor;
-    }
-
+    /**
+     *  Setters and Getters
+     */
     public void setAgentColor(Color agentColor) {
         this.agentColor = agentColor;
     }
-
     public void setCurrentPosition(Position current) {
         this.current = current;
     }
-
     public void setEndPoint(Position endPoint) {
         this.endPoint = endPoint;
     }
@@ -155,8 +153,13 @@ public class Agent extends Thread {
     public Position getEndPoint() {
         return endPoint;
     }
-
     public Position getCurrentPosition() {
         return current;
+    }
+    public int getIdAgent() {
+        return idAgent;
+    }
+    public Color getAgentColor() {
+        return agentColor;
     }
 }
