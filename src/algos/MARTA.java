@@ -3,6 +3,7 @@ package algos;
 import agent.Agent;
 import utils.Position;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class MARTA {
 
     Position currentPosi;
     List<Integer> costToGoalPosi;
-    List<Position> childPositions = new HashSet<>();
+    List<Position> childPositions = new ArrayList<>();
 
     private void solvePuzzle(Agent agent) {
 

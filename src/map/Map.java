@@ -1,6 +1,7 @@
 package map;
 
 import agent.Agent;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import utils.Position;
 
@@ -58,6 +59,8 @@ public class Map extends Observable {
         }
         setPosition(agentDestPos, current);
         setPosition(agentCurrentPos, dest);
+        setChanged();
+        notifyObservers();
         return true;
     }
 
@@ -75,4 +78,40 @@ public class Map extends Observable {
             grille[position.getX()][position.getY()] = agent;
         }
     }
+
+    public void startAgents(){
+        for (int x=0 ; x<grille.length ; x++) {
+            for (int y=0 ; y<grille.length ; y++){
+                if (grille[x][y] != null){
+                    grille[x][y].start();
+                }
+            }
+        }
+    }
+
+    public synchronized void startAgents(long betweenLaunchMillis){
+        for (int x=0 ; x<grille.length ; x++) {
+            for (int y=0 ; y<grille.length ; y++){
+                if (grille[x][y] != null){
+                    grille[x][y].start();
+                    try {
+                        Thread.sleep(betweenLaunchMillis);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public void stopAgents(){
+        for (int x=0 ; x<grille.length ; x++) {
+            for (int y=0 ; y<grille.length ; y++){
+                if (grille[x][y] != null){
+                    grille[x][y].interrupt();
+                }
+            }
+        }
+    }
+
 }

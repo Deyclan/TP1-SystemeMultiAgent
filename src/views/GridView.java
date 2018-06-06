@@ -1,5 +1,6 @@
 package views;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -39,7 +40,7 @@ public class GridView extends Stage {
         map.addObserver(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-                fillPane();
+                Platform.runLater(() -> fillPane());
             }
         });
 
@@ -111,6 +112,7 @@ public class GridView extends Stage {
 
     @Override
     public void close(){
+        Platform.runLater(()-> map.stopAgents());
         super.close();
     }
 }

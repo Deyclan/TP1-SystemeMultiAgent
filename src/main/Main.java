@@ -35,5 +35,7 @@ public class Main extends Application {
 
         GridView view = new GridView(MAP);
         System.out.println("View launched");
+
+        MAP.startAgents(1000);
     }
 }
