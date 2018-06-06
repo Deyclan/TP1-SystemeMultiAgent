@@ -1,12 +1,13 @@
 package map;
 
 import agent.Agent;
+import javafx.geometry.Pos;
 import utils.Position;
 
 import java.util.List;
 import java.util.Observable;
 
-public class Map extends Observable{
+public class Map extends Observable {
 
     public static Map instance;
     private int size;
@@ -66,7 +67,12 @@ public class Map extends Observable{
         }
     }
 
-    public void addAgent(Agent agent){
-
+    public void addAgent(Agent agent) {
+        Position position = agent.getCurrentPosition();
+        if (grille[position.getX()][position.getY()] != null) {
+            System.out.println("Error : Impossible d'ajouter l'agent "+agent+",  la case ["+position.getX()+","+position.getY()+"] est déjà occupée");
+        } else {
+            grille[position.getX()][position.getY()] = agent;
+        }
     }
 }

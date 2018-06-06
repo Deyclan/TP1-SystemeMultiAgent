@@ -30,7 +30,7 @@ public class GridView extends Stage {
         map.addObserver(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-                // TODO : fill pane
+                fillPane();
             }
         });
 

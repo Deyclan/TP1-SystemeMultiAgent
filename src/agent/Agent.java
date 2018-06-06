@@ -151,4 +151,12 @@ public class Agent extends Thread {
     public void setEndPoint(Position endPoint) {
         this.endPoint = endPoint;
     }
+
+    public Position getEndPoint() {
+        return endPoint;
+    }
+
+    public Position getCurrentPosition() {
+        return current;
+    }
 }
