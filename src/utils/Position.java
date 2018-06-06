@@ -27,4 +27,11 @@ public class Position {
     public void setY(int y) {
         this.y = y;
     }
+
+    public boolean isEqual(Position position){
+        return position.getY() == this.getY() && position.getX() == this.getX();
+    }
+    public double distEuclidienne(Position position){
+        return Math.sqrt(Math.pow(this.getX() + position.getX(), 2)+Math.pow(this.getY() + position.getY(), 2));
+    }
 }

@@ -9,6 +9,9 @@ import utils.Direction;
 import utils.Position;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Agent extends Thread {
@@ -33,6 +36,82 @@ public class Agent extends Thread {
         this.agentColor = color;
     }
 
+    @Override
+    public void run() {
+        super.run();
+        synchronized (this) {
+            while (true) {
+                if (current.isEqual(endPoint)) {
+                    // TODO : Move si y'a des demandes
+                    System.out.println("Agent "+this.getIdAgent()+" Arrived");
+                } else {
+                    Position pos = getWorthAvailableMove();
+                    if (pos != null) {
+                        this.move(posToDir(pos));
+                    }
+                }
+                try {
+                    this.wait(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                notifyAll();
+            }
+        }
+    }
+
+    /**
+     *  Movement Methods
+     */
+    public void move(Direction direction){
+        Position tempPos = new Position();
+        switch (direction){
+            case LEFT:
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX());
+                    tempPos.setY(current.getY() - 1);
+                    if(map.move(current, tempPos)){ // On tente de bouger sur la grille
+                        System.out.println("Agent "+this.getIdAgent()+ " : Moving LEFT");
+                        current = tempPos;
+                    }
+                }
+                break;
+            case DOWN:
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX()+1);
+                    tempPos.setY(current.getY());
+                    if(map.move(current, tempPos)){
+                        System.out.println("Agent "+this.getIdAgent()+ " : Moving DOWN");
+                        current = tempPos;
+                    }
+                }
+                break;
+            case RIGHT:
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX());
+                    tempPos.setY(current.getY() + 1);
+                    if(map.move(current, tempPos)){
+                        System.out.println("Agent "+this.getIdAgent()+ " : Moving RIGHT");
+                        current = tempPos;
+                    }
+                }
+                break;
+            case UP:
+                if(isMoveAvailable(direction)) {
+                    tempPos.setX(current.getX() - 1);
+                    tempPos.setY(current.getY());
+                    if(map.move(current, tempPos)){
+                        System.out.println("Agent "+this.getIdAgent()+ " : Moving UP");
+                        current = tempPos;
+                    }
+                }
+                break;
+            default:
+                    // ne bouge pas
+                break;
+        }
+    }
+
     public boolean canMoveToPosi(Position position) {
         Direction direction = null;
         if (this.getCurrentPosition().getY() > position.getY())
@@ -45,6 +124,60 @@ public class Agent extends Thread {
             direction = Direction.LEFT;
 
         return isMoveAvailable(direction);
+    }
+
+    public java.util.Map<Position, Double> getWeightAvailableMoves(){
+        List<Position> positions = getAvailableMoves();
+        HashMap<Position, Double> posWeight = new HashMap<>();
+        for (Position pos : positions) {
+            posWeight.put(pos, pos.distEuclidienne(getGoalPosition()));
+        }
+        return posWeight;
+    }
+
+    public Position getWorthAvailableMove(){
+        List<Position> positions = getAvailableMoves();
+        Comparator<Position> ComparePosToEndPoint = Comparator.comparing(p -> p.distEuclidienne(endPoint));
+        return positions.stream().max(ComparePosToEndPoint).get();
+    }
+
+    public Direction posToDir(Position position){
+        int differenceX = this.current.getX() - position.getX();
+        int differenceY = this.current.getY() - position.getY();
+
+        if (Math.abs(differenceX) >= Math.abs(differenceY)){ // Déplacement axe x
+            if (differenceX > 0){
+                return Direction.UP;
+            }
+            else {
+                return Direction.DOWN;
+            }
+        }
+        else { // Déplacement axe y
+            if (differenceY > 0){
+                return Direction.LEFT;
+            }
+            else {
+                return Direction.RIGHT;
+            }
+        }
+    }
+
+    public List<Position> getAvailableMoves(){
+        List<Position> positions = new ArrayList<>();
+        if(isMoveAvailable(Direction.DOWN)){
+            positions.add(new Position(current.getX()+1, current.getY()));
+        }
+        else if(isMoveAvailable(Direction.RIGHT)){
+            positions.add(new Position(current.getX(), current.getY()+1));
+        }
+        else if(isMoveAvailable(Direction.UP)) {
+            positions.add(new Position(current.getX()-1, current.getY()));
+        }
+        else if(isMoveAvailable(Direction.LEFT)){
+            positions.add(new Position(current.getX(), current.getY()-1));
+        }
+        return positions;
     }
 
     public List<Position> getAdjacentPositions() {
@@ -79,11 +212,11 @@ public class Agent extends Thread {
     private boolean isMoveAvailable(Direction direction) {
         Position tempPos = new Position();
         Agent agent;
-        switch (direction) {
-            case UP:
+        switch (direction){
+            case LEFT:
                 tempPos.setX(current.getX());
-                tempPos.setY(current.getY() - 1);
-                if (tempPos.getY() < 0) {
+                tempPos.setY(current.getY()-1);
+                if (tempPos.getY() < 0 ) {
                     return false;
                 }
                 if ((agent = map.getPosition(tempPos)) != null) {
@@ -92,8 +225,8 @@ public class Agent extends Thread {
                 }
                 return true;
 
-            case RIGHT:
-                tempPos.setX(current.getX() + 1);
+            case DOWN:
+                tempPos.setX(current.getX()+1);
                 tempPos.setY(current.getY());
                 if (tempPos.getX() >= map.getSize()) {
                     return false;
@@ -104,9 +237,9 @@ public class Agent extends Thread {
                 }
                 return true;
 
-            case DOWN:
+            case RIGHT:
                 tempPos.setX(current.getX());
-                tempPos.setY(current.getY() + 1);
+                tempPos.setY(current.getY()+1);
                 if (tempPos.getY() >= map.getSize()) {
                     return false;
                 }
@@ -116,8 +249,8 @@ public class Agent extends Thread {
                 }
                 return true;
 
-            case LEFT:
-                tempPos.setX(current.getX() - 1);
+            case UP:
+                tempPos.setX(current.getX()-1);
                 tempPos.setY(current.getY());
                 if (tempPos.getX() < 0) {
                     return false;
@@ -133,6 +266,9 @@ public class Agent extends Thread {
         }
     }
 
+    /**
+     *  Setters and Getters
+     */
     public int getIdAgent() {
         return idAgent;
     }
@@ -145,19 +281,15 @@ public class Agent extends Thread {
         this.agentColor = agentColor;
     }
 
-    public void setEndPoint(Position endPoint) {
-        this.endPoint = endPoint;
-    }
-
-    public Position getCurrentPosition() {
-        return current;
-    }
-
     public void setCurrentPosition(Position current) {
         this.current = current;
     }
 
-    public Position getGoalPosition() {
-        return endPoint;
+    public void setEndPoint(Position endPoint) {
+        this.endPoint = endPoint;
     }
+
+    public Position getCurrentPosition() { return current; }
+
+    public Position getGoalPosition() { return endPoint; }
 }
