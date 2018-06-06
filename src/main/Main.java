@@ -1,6 +1,7 @@
 package main;
 
 import agent.Agent;
+import algos.MARTA;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import map.Map;
@@ -21,10 +22,16 @@ public class Main extends Application {
         MAP = Map.getInstance(GRID_SIZE);
         MESSAGE_BOX = MessageBox.getInstance(NB_AGENT);
         Agent agent = new Agent(1, MAP, MESSAGE_BOX);
-        agent.setCurrentPosition(new Position(2,2));
-        agent.setEndPoint(new Position(1,1));
+        agent.setCurrentPosition(new Position(2, 2));
+        agent.setEndPoint(new Position(1, 1));
         MAP.addAgent(agent);
         GridView view = new GridView(MAP);
         System.out.println("View launched");
+        MARTA marta = new MARTA();
+        while (!marta.getSolved()){
+            marta.solvePuzzle(agent);
+            System.out.println("agent X : "+agent.getCurrentPosition().getX()
+                    + "\nagent Y : "+agent.getCurrentPosition().getY());
+        }
     }
 }
