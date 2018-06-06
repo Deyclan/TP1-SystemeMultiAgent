@@ -23,13 +23,13 @@ public class Agent extends Thread {
     private Color agentColor = Color.GRAY;
     private ArrayList<Message> agentBox;
 
-    public Agent(int idAgent, Map map, MessageBox messageBox){
+    public Agent(int idAgent, Map map, MessageBox messageBox) {
         this.idAgent = idAgent;
         this.map = map;
         this.messageBox = messageBox;
     }
 
-    public Agent(int idAgent, Map map, MessageBox messageBox, Color color){
+    public Agent(int idAgent, Map map, MessageBox messageBox, Color color) {
         this.idAgent = idAgent;
         this.map = map;
         this.messageBox = messageBox;
@@ -173,33 +173,36 @@ public class Agent extends Thread {
         return positions;
     }
 
-    public List<Position> getAdjacentPositions(){
-        List<Position> adjacentPos = null;
-        Position tempPos = new Position();
+    public List<Position> getAdjacentPositions() {
+        List<Position> adjacentPos = new ArrayList<>();
         // Up
-        tempPos.setX(current.getX());
-        tempPos.setY(current.getY()-1);
-        if(tempPos.getY() >= 0 )
-            adjacentPos.add(tempPos);
+        Position tempPos1 = new Position();
+        tempPos1.setX(current.getX());
+        tempPos1.setY(current.getY() - 1);
+        if (tempPos1.getY() >= 0)
+            adjacentPos.add(tempPos1);
         // Right
-        tempPos.setX(current.getX()+1);
-        tempPos.setY(current.getY());
-        if (tempPos.getX() < map.getSize())
-            adjacentPos.add(tempPos);
+        Position tempPos2 = new Position();
+        tempPos2.setX(current.getX() + 1);
+        tempPos2.setY(current.getY());
+        if (tempPos2.getX() < map.getSize())
+            adjacentPos.add(tempPos2);
         // Down
-        tempPos.setX(current.getX());
-        tempPos.setY(current.getY()+1);
-        if (tempPos.getY() < map.getSize())
-            adjacentPos.add(tempPos);
+        Position tempPos3 = new Position();
+        tempPos3.setX(current.getX());
+        tempPos3.setY(current.getY() + 1);
+        if (tempPos3.getY() < map.getSize())
+            adjacentPos.add(tempPos3);
         // Left
-        tempPos.setX(current.getX()-1);
-        tempPos.setY(current.getY());
-        if (tempPos.getX() >= 0 )
-            adjacentPos.add(tempPos);
+        Position tempPos4 = new Position();
+        tempPos4.setX(current.getX() - 1);
+        tempPos4.setY(current.getY());
+        if (tempPos4.getX() >= 0)
+            adjacentPos.add(tempPos4);
         return adjacentPos;
     }
 
-    private boolean isMoveAvailable(Direction direction){
+    public boolean isMoveAvailable(Direction direction) {
         Position tempPos = new Position();
         Agent agent;
         switch (direction){
@@ -209,7 +212,7 @@ public class Agent extends Thread {
                 if (tempPos.getY() < 0 ) {
                     return false;
                 }
-                if ((agent = map.getPosition(tempPos)) != null){
+                if ((agent = map.getPosition(tempPos)) != null) {
                     messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
                     return false;
                 }
@@ -218,10 +221,10 @@ public class Agent extends Thread {
             case DOWN:
                 tempPos.setX(current.getX()+1);
                 tempPos.setY(current.getY());
-                if (tempPos.getX() >= map.getSize() ) {
+                if (tempPos.getX() >= map.getSize()) {
                     return false;
                 }
-                if ((agent = map.getPosition(tempPos)) != null){
+                if ((agent = map.getPosition(tempPos)) != null) {
                     messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
                     return false;
                 }
@@ -233,7 +236,7 @@ public class Agent extends Thread {
                 if (tempPos.getY() >= map.getSize()) {
                     return false;
                 }
-                if ((agent = map.getPosition(tempPos)) != null){
+                if ((agent = map.getPosition(tempPos)) != null) {
                     messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
                     return false;
                 }
@@ -242,10 +245,10 @@ public class Agent extends Thread {
             case UP:
                 tempPos.setX(current.getX()-1);
                 tempPos.setY(current.getY());
-                if (tempPos.getX() < 0 ) {
+                if (tempPos.getX() < 0) {
                     return false;
                 }
-                if ((agent = map.getPosition(tempPos)) != null){
+                if ((agent = map.getPosition(tempPos)) != null) {
                     messageBox.sendMessage(agent.getIdAgent(), new Message(this, agent, MessageType.REQUEST, tempPos));
                     return false;
                 }
@@ -259,24 +262,24 @@ public class Agent extends Thread {
     /**
      *  Setters and Getters
      */
-    public void setCurrentPosition(Position current) {
-        this.current = current;
-    }
-
-    public void setAgentColor(Color agentColor) {
-        this.agentColor = agentColor;
-    }
-
-    public void setEndPoint(Position endPoint) {
-        this.endPoint = endPoint;
-    }
-
     public int getIdAgent() {
         return idAgent;
     }
 
     public Color getAgentColor() {
         return agentColor;
+    }
+
+    public void setAgentColor(Color agentColor) {
+        this.agentColor = agentColor;
+    }
+
+    public void setCurrentPosition(Position current) {
+        this.current = current;
+    }
+
+    public void setEndPoint(Position endPoint) {
+        this.endPoint = endPoint;
     }
 
     public Position getCurrentPosition() { return current; }

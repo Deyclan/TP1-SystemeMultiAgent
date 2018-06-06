@@ -11,7 +11,7 @@ public class Message {
     private MessageType messageType;
     private Position posToFree;
 
-    public Message(Agent from, Agent to, MessageType type, Position posToFree){
+    public Message(Agent from, Agent to, MessageType type, Position posToFree) {
         this.from = from;
         this.to = to;
         this.messageType = type;
