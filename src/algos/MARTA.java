@@ -1,6 +1,7 @@
 package algos;
 
 import agent.Agent;
+import utils.Direction;
 import utils.Position;
 
 import java.util.ArrayList;
@@ -30,10 +31,13 @@ public class MARTA {
         childPositions = agent.getAdjacentPositions();
         //Step 3 [termination?] if there exists a goal state in C(sx), then move to the goal state and quit
         for (Position posi : childPositions) {
-            if (agent.getGoalPosition().equals(posi)) {
-                hasMoved = agent.canMoveToPosi(posi);
-                if(hasMoved)
+            if (agent.getGoalPosition().isEqual(posi)) {
+                Direction direction = agent.posToDir(posi);
+                hasMoved = agent.isMoveAvailable(direction);
+                if(hasMoved){
+                    agent.move(direction);
                     isSolved = true;
+                }
                 return;
             }
         }
@@ -45,10 +49,12 @@ public class MARTA {
 
         //Step 7 [Move] set sx=sy'
         Position nextPosi = childPositions.get(index);
-        hasMoved = agent.canMoveToPosi(nextPosi);
+        Direction direction = agent.posToDir(nextPosi);
+        hasMoved = agent.isMoveAvailable(direction);
+
         //Step 8 Go to step 2
         if (hasMoved) {
-            agent.setCurrentPosition(nextPosi);
+            agent.move(direction);
         }
     }
 

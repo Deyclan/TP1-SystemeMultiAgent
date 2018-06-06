@@ -1,6 +1,7 @@
 package main;
 
 import agent.Agent;
+import algos.MARTA;
 import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -23,7 +24,7 @@ public class Main extends Application {
         MESSAGE_BOX = MessageBox.getInstance(NB_AGENT);
 
         Agent agent = new Agent(1, MAP, MESSAGE_BOX);
-        agent.setCurrentPosition(new Position(2,2));
+        agent.setCurrentPosition(new Position(4,4));
         agent.setEndPoint(new Position(1,1));
 
         Agent agent1 = new Agent(2, MAP, MESSAGE_BOX, Color.BLUE);
@@ -31,11 +32,18 @@ public class Main extends Application {
         agent1.setEndPoint(new Position(1,2));
 
         MAP.addAgent(agent);
-        MAP.addAgent(agent1);
+ //       MAP.addAgent(agent1);
 
         GridView view = new GridView(MAP);
         System.out.println("View launched");
 
-        MAP.startAgents(1000);
+//        MAP.startAgents(1000);
+
+        MARTA marta = new MARTA();
+        while (!marta.getSolved()){
+            marta.solvePuzzle(agent);
+            System.out.println("agent X : "+agent.getCurrentPosition().getX()
+                    + "\nagent Y : "+agent.getCurrentPosition().getY());
+        }
     }
 }

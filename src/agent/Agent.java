@@ -11,7 +11,6 @@ import utils.Position;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Agent extends Thread {
@@ -112,20 +111,6 @@ public class Agent extends Thread {
         }
     }
 
-    public boolean canMoveToPosi(Position position) {
-        Direction direction = null;
-        if (this.getCurrentPosition().getY() > position.getY())
-            direction = Direction.UP;
-        if (this.getCurrentPosition().getX() < position.getX())
-            direction = Direction.RIGHT;
-        if (this.getCurrentPosition().getY() < position.getY())
-            direction = Direction.DOWN;
-        if (this.getCurrentPosition().getX() > position.getX())
-            direction = Direction.LEFT;
-
-        return isMoveAvailable(direction);
-    }
-
     public java.util.Map<Position, Double> getWeightAvailableMoves(){
         List<Position> positions = getAvailableMoves();
         HashMap<Position, Double> posWeight = new HashMap<>();
@@ -209,7 +194,7 @@ public class Agent extends Thread {
         return adjacentPos;
     }
 
-    private boolean isMoveAvailable(Direction direction) {
+    public boolean isMoveAvailable(Direction direction) {
         Position tempPos = new Position();
         Agent agent;
         switch (direction){

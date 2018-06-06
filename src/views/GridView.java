@@ -5,8 +5,8 @@ import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import map.Map;
 
@@ -33,7 +33,7 @@ public class GridView extends Stage {
 
     private int tailleRect;
 
-    public GridView(Map map){
+    public GridView(Map map) {
 
         this.map = map;
         tailleRect = Math.floorDiv(graphicHeigh, map.getSize());
@@ -67,7 +67,7 @@ public class GridView extends Stage {
 
     }
 
-    private void fillPane(){
+    private void fillPane() {
         grid.getChildren().clear();
         addGridLines();
         for (int line = 0; line < map.getSize(); line++ ) {
