@@ -8,6 +8,9 @@ import messaging.MessageType;
 import utils.Direction;
 import utils.Position;
 
+import java.util.List;
+import java.util.Set;
+
 public class Agent extends Thread {
 
     private Map map;
@@ -73,6 +76,32 @@ public class Agent extends Thread {
                     // ne bouge pas
                 break;
         }
+    }
+
+    public List<Position> getAdjacentPositions(){
+        List<Position> adjacentPos = null;
+        Position tempPos = new Position();
+        // Up
+        tempPos.setX(current.getX());
+        tempPos.setY(current.getY()-1);
+        if(tempPos.getY() >= 0 )
+            adjacentPos.add(tempPos);
+        // Right
+        tempPos.setX(current.getX()+1);
+        tempPos.setY(current.getY());
+        if (tempPos.getX() < map.getSize())
+            adjacentPos.add(tempPos);
+        // Down
+        tempPos.setX(current.getX());
+        tempPos.setY(current.getY()+1);
+        if (tempPos.getY() < map.getSize())
+            adjacentPos.add(tempPos);
+        // Left
+        tempPos.setX(current.getX()-1);
+        tempPos.setY(current.getY());
+        if (tempPos.getX() >= 0 )
+            adjacentPos.add(tempPos);
+        return adjacentPos;
     }
 
     private boolean isMoveAvailable(Direction direction){
@@ -152,11 +181,7 @@ public class Agent extends Thread {
         this.endPoint = endPoint;
     }
 
-    public Position getEndPoint() {
-        return endPoint;
-    }
+    public Position getCurrentPosition() { return current; }
 
-    public Position getCurrentPosition() {
-        return current;
-    }
+    public Position getGoalPosition() { return endPoint; }
 }
