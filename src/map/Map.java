@@ -11,7 +11,7 @@ public class Map extends Observable {
     private static Map instance;
     private int size;
     public static int distLock = 0;
-    public static boolean cornersOk = false;
+    private static boolean cornersOk = false;
 
     private Agent[][] grille;
 
@@ -79,7 +79,7 @@ public class Map extends Observable {
         }
     }
 
-    public void startAgents(long betweenLaunchMillis){
+    public synchronized void startAgents(long betweenLaunchMillis){
         for (int x=0 ; x<grille.length ; x++) {
             for (int y=0 ; y<grille.length ; y++){
                 if (grille[x][y] != null){
@@ -136,6 +136,10 @@ public class Map extends Observable {
                 cornersOk = false;
             }
         }
+    }
+
+    public synchronized static boolean isCornersOk(){
+        return cornersOk;
     }
 
 }

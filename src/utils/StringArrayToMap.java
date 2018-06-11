@@ -6,6 +6,11 @@ import map.Map;
 import messaging.MessageBox;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+
 
 public class StringArrayToMap {
 
@@ -24,6 +29,38 @@ public class StringArrayToMap {
                         i++;
                     }
                 }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void aleaToMap(String[][] finalPositions, Map map, MessageBox messageBox){
+        try {
+            List<Position> availablePos = new ArrayList<>();
+            List<Agent> agents = new ArrayList<>();
+            int i = 0;
+            for (int x = 0; x < finalPositions.length; x++) {
+                for (int y = 0; y < finalPositions[x].length; y++) {
+                    availablePos.add(new Position(x, y));
+                    if (!finalPositions[x][y].equals("")){
+                        Agent agent = new Agent(i, map, messageBox, letterToColor(finalPositions[x][y]), finalPositions[x][y]);
+                        agent.setEndPoint(new Position(x, y));
+                        agents.add(agent);
+                        i++;
+                    }
+                }
+            }
+            int index = 0;
+            Random random = new Random();
+            while (index < agents.size()){
+                int alea = random.nextInt(availablePos.size());
+                agents.get(index).setCurrentPosition(availablePos.get(alea));
+                availablePos.remove(alea);
+                index++;
+            }
+            for (Agent agent:agents) {
+                map.addAgent(agent);
             }
         }catch (Exception e){
             e.printStackTrace();

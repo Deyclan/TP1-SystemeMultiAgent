@@ -2,6 +2,7 @@ package algos;
 
 import agent.Agent;
 import messaging.Message;
+import messaging.MessageBox;
 import messaging.MessageType;
 import utils.Direction;
 import utils.Position;
@@ -17,10 +18,6 @@ public class MARTA {
     List<Position> childPositions;
 
     Boolean isSolved=false;
-
-    public Boolean getSolved() {
-        return isSolved;
-    }
 
     public void solvePuzzle(Agent agent) {
         boolean hasMoved = false;
@@ -43,7 +40,10 @@ public class MARTA {
                 }
                 else {
                     Agent agentToMove = agent.getAgentToMove(posi);
-                    agent.getMessageBox().sendMessage(agentToMove.getIdAgent(), new Message(agent, agentToMove, MessageType.REQUEST, posi));
+                    MessageBox mb =  agent.getMessageBox();
+                    int idAgentToMove = agentToMove.getIdAgent();
+                    Message messageToSend = new Message(agent, agentToMove, MessageType.REQUEST, posi);
+                    mb.sendMessage(idAgentToMove, messageToSend);
                 }
                 return;
             }
@@ -97,4 +97,11 @@ public class MARTA {
         }
     }
 
+    public Boolean getSolved() {
+        return isSolved;
+    }
+
+    public void setSolved(Boolean solved) {
+        isSolved = solved;
+    }
 }

@@ -79,8 +79,12 @@ public class GridView extends Stage {
                     //rectangle.setX((col*tailleRect)+rectPosCorrection);
                     //rectangle.setY((line*tailleRect)+rectPosCorrection);
                     rectangle.setFill(map.getGrille()[line][col].getAgentColor());
+                    if (map.getGrille()[line][col].isArrive()){
+                        rectangle.setStrokeWidth(2);
+                        rectangle.setStroke(Color.RED);
+                    }
                     Text text = new Text(map.getGrille()[line][col].getAgentName());
-                    text.setFont(Font.font(15)); // TODO : Faire une font size qui s'adapte à la taille de la grille
+                    text.setFont(Font.font(20)); // TODO : Faire une font size qui s'adapte à la taille de la grille
                     StackPane stackPane = new StackPane();
                     stackPane.setLayoutX((col*tailleRect)+rectPosCorrection);
                     stackPane.setLayoutY((line*tailleRect)+rectPosCorrection);

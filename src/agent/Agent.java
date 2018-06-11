@@ -11,6 +11,7 @@ import utils.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class Agent extends Thread {
@@ -28,7 +29,10 @@ public class Agent extends Thread {
 
     private int distToBorder;
 
-    private static final int WAITING_TIME = 1500;
+    private Random random = new Random();
+
+    private static final int WAITING_TIME = 1000;
+    private int waitingTime = WAITING_TIME;
 
     public Agent(int idAgent, Map map, MessageBox messageBox) {
         this.idAgent = idAgent;
@@ -61,9 +65,19 @@ public class Agent extends Thread {
             try {
                 MARTA marta = new MARTA();
                 if (isCorner){
+                    int unLooper = 0; // Doit permettre d'éviter de rester bloquer dans une boucle
                     while (!marta.getSolved() || distToBorder > Map.distLock) {
-                        agentBox = messageBox.getBox().get(getIdAgent());
-                        if (agentBox.size() > 0) {
+
+                        if (distToBorder <= Map.distLock){
+                            waitingTime = (int) WAITING_TIME/4;
+                        } else waitingTime = WAITING_TIME;
+
+                        boolean hasMoved = false;
+                        synchronized (messageBox) {
+                            agentBox = new ArrayList<>(messageBox.getBox().get(getIdAgent()));
+                        }
+                        if (agentBox.size() > 0 && distToBorder > Map.distLock && unLooper > 20) {
+                            unLooper = 0;
                             List<Message> requests = agentBox.stream().filter(message -> message.getMessageType() == MessageType.REQUEST).collect(Collectors.toList());
                             for (Message m : requests) {
                                 if (m.getPosToFree().isEqual(currentPosition)) {
@@ -71,41 +85,75 @@ public class Agent extends Thread {
                                     List<Direction> availableDir = available.stream().map(this::posToDir).collect(Collectors.<Direction>toList());
                                     if (availableDir.size() > 0) {
                                         this.move(availableDir.get(0));
-                                        messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
-                                        messageBox.deleteMessage(this.getIdAgent(), m);
-                                        Thread.sleep(WAITING_TIME);
+                                        if (currentPosition.isEqual(endPoint)){
+                                            marta.setSolved(true);
+                                        }
+                                        hasMoved = true;
+                                        synchronized (messageBox) {
+                                            messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
+                                            messageBox.deleteMessage(this.getIdAgent(), m);
+                                        }
+                                        Thread.sleep( waitingTime + random.nextInt(waitingTime));
                                     }
                                 } else {
-                                    agentBox.remove(m);
+                                    synchronized (messageBox) {
+                                        messageBox.getBox().get(getIdAgent()).remove(m);
+                                    }
                                 }
                             }
                         }
-                        Thread.sleep(WAITING_TIME);
-                        marta.solvePuzzle(this);
+                        unLooper++;
+                        Thread.sleep(waitingTime + random.nextInt(waitingTime));
+                        if (!hasMoved) {
+                            marta.solvePuzzle(this);
+                        }
+                        Thread.sleep(100);
                     }
                 }
                 else {
-                    while (!marta.getSolved() || distToBorder > Map.distLock || !Map.cornersOk) {
-                        agentBox = messageBox.getBox().get(getIdAgent());
+                    synchronized (map){
+
+                    }
+                    while (!marta.getSolved() || distToBorder > Map.distLock || !Map.isCornersOk()) {
+
+                        if (distToBorder <= Map.distLock){
+                            waitingTime = (int) WAITING_TIME/4;
+                        } else waitingTime = WAITING_TIME;
+
+                        boolean hasMoved = false;
+                        synchronized (messageBox) {
+                            agentBox = new ArrayList<>(messageBox.getBox().get(getIdAgent()));
+                        }
                         if (agentBox.size() > 0) {
-                            List<Message> requests = agentBox.stream().filter(message -> message.getMessageType() == MessageType.REQUEST).collect(Collectors.toList());
+                            List<Message> requests = new ArrayList<>(agentBox.stream().filter(message -> message.getMessageType() == MessageType.REQUEST).collect(Collectors.toList()));
                             for (Message m : requests) {
                                 if (m.getPosToFree().isEqual(currentPosition)) {
                                     List<Position> available = getAvailableMoves();
                                     List<Direction> availableDir = available.stream().map(this::posToDir).collect(Collectors.<Direction>toList());
                                     if (availableDir.size() > 0) {
                                         this.move(availableDir.get(0));
-                                        messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
-                                        messageBox.deleteMessage(this.getIdAgent(), m);
-                                        Thread.sleep(WAITING_TIME+0);
+                                        if (currentPosition.isEqual(endPoint)){
+                                            marta.setSolved(true);
+                                        }
+                                        hasMoved = true;
+                                        synchronized (messageBox) {
+                                            messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
+                                            messageBox.deleteMessage(this.getIdAgent(), m);
+                                        }
+                                        Thread.sleep(waitingTime + random.nextInt(waitingTime) + 0);
                                     }
                                 } else {
-                                    agentBox.remove(m);
+                                    synchronized (messageBox) {
+                                        messageBox.getBox().get(getIdAgent()).remove(m);
+                                    }
                                 }
                             }
                         }
-                        Thread.sleep(WAITING_TIME);
-                        marta.solvePuzzle(this);
+                        Thread.sleep(waitingTime + random.nextInt(waitingTime));
+                        if (!hasMoved) {
+                            marta.solvePuzzle(this);
+                        }
+                        Thread.sleep(100);
                     }
                 }
                 this.arrive = true;
