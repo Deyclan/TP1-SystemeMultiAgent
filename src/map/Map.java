@@ -8,8 +8,9 @@ import java.util.Observable;
 
 public class Map extends Observable {
 
-    public static Map instance;
+    private static Map instance;
     private int size;
+    public static int distLock = 0;
 
     private Agent[][] grille;
 
@@ -26,7 +27,7 @@ public class Map extends Observable {
 
     public static Map getInstance(int size) {
         if (instance == null){
-            return new Map(size);
+            instance = new Map(size);
         }
         return instance;
     }
@@ -99,6 +100,23 @@ public class Map extends Observable {
                     grille[x][y].interrupt();
                 }
             }
+        }
+    }
+
+    public synchronized static void checkLocker(){
+        boolean everybodylocked = true;
+        for (int x = 0 ; x< instance.size ; x++){
+            for (int y = 0 ; y< instance.size ; y++){
+                Agent agent = instance.grille[x][y];
+                if (agent != null) {
+                    if (agent.getDistToBorder() <= distLock && !agent.isArrive()) {
+                        everybodylocked = false;
+                    }
+                }
+            }
+        }
+        if (everybodylocked){
+            distLock++;
         }
     }
 

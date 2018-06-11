@@ -21,4 +21,12 @@ public class Message {
     public MessageType getMessageType() {
         return messageType;
     }
+
+    public Position getPosToFree() {
+        return posToFree;
+    }
+
+    public Agent getFrom() {
+        return from;
+    }
 }

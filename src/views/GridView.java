@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import map.Map;
 
@@ -74,10 +76,16 @@ public class GridView extends Stage {
             for (int col = 0; col < map.getSize(); col++) {
                 if (map.getGrille()[line][col] != null){
                     Rectangle rectangle = new Rectangle(tailleRect - rectSizeCorrection,tailleRect - rectSizeCorrection);
-                    rectangle.setX((col*tailleRect)+rectPosCorrection);
-                    rectangle.setY((line*tailleRect)+rectPosCorrection);
+                    //rectangle.setX((col*tailleRect)+rectPosCorrection);
+                    //rectangle.setY((line*tailleRect)+rectPosCorrection);
                     rectangle.setFill(map.getGrille()[line][col].getAgentColor());
-                    grid.getChildren().addAll(rectangle);
+                    Text text = new Text(map.getGrille()[line][col].getAgentName());
+                    text.setFont(Font.font(15)); // TODO : Faire une font size qui s'adapte à la taille de la grille
+                    StackPane stackPane = new StackPane();
+                    stackPane.setLayoutX((col*tailleRect)+rectPosCorrection);
+                    stackPane.setLayoutY((line*tailleRect)+rectPosCorrection);
+                    stackPane.getChildren().addAll(rectangle, text);
+                    grid.getChildren().addAll(stackPane);
                 }
             }
         }
