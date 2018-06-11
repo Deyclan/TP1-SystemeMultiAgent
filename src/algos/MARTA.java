@@ -38,7 +38,7 @@ public class MARTA {
                 hasMoved = agent.isMoveAvailable(direction);
                 if(hasMoved){
                     agent.move(direction);
-                    System.out.println("Agent "+agent.getIdAgent()+" : Arrived");
+                    //System.out.println("Agent "+agent.getIdAgent()+" : Arrived");
                     isSolved = true;
                 }
                 else {

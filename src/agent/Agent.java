@@ -24,8 +24,11 @@ public class Agent extends Thread {
     private String name;
     private List<Message> agentBox;
     private boolean arrive;
+    private boolean isCorner;
 
     private int distToBorder;
+
+    private static final int WAITING_TIME = 1500;
 
     public Agent(int idAgent, Map map, MessageBox messageBox) {
         this.idAgent = idAgent;
@@ -52,22 +55,13 @@ public class Agent extends Thread {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
         super.run();
         synchronized (this) {
             try {
-                /*
-                Algo algo = new Algo();
-                while (true){
-                    algo.solve(this);
-                    Thread.sleep(1000);
-                }
-
-                */
                 MARTA marta = new MARTA();
-                //MARTAImproved marta = new MARTAImproved();
-                while (true) {
-                    if (!marta.getSolved() || distToBorder > Map.distLock) {
+                if (isCorner){
+                    while (!marta.getSolved() || distToBorder > Map.distLock) {
                         agentBox = messageBox.getBox().get(getIdAgent());
                         if (agentBox.size() > 0) {
                             List<Message> requests = agentBox.stream().filter(message -> message.getMessageType() == MessageType.REQUEST).collect(Collectors.toList());
@@ -79,28 +73,49 @@ public class Agent extends Thread {
                                         this.move(availableDir.get(0));
                                         messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
                                         messageBox.deleteMessage(this.getIdAgent(), m);
-                                        Thread.sleep(1000);
+                                        Thread.sleep(WAITING_TIME);
                                     }
                                 } else {
                                     agentBox.remove(m);
                                 }
                             }
                         }
-                        Thread.sleep(1000);
+                        Thread.sleep(WAITING_TIME);
                         marta.solvePuzzle(this);
                     }
-                    else {
-                        this.arrive = true;
-                        Map.checkLocker();
-                        System.out.println(String.format("Agent %d ( %s ) Arrivé et locké", idAgent, name));
-                        Thread.sleep(5000);
-                    }
-                    //System.out.println("agent X : " + this.getCurrentPosition().getX()
-                    //        + "\nagent Y : " + this.getCurrentPosition().getY());
                 }
+                else {
+                    while (!marta.getSolved() || distToBorder > Map.distLock || !Map.cornersOk) {
+                        agentBox = messageBox.getBox().get(getIdAgent());
+                        if (agentBox.size() > 0) {
+                            List<Message> requests = agentBox.stream().filter(message -> message.getMessageType() == MessageType.REQUEST).collect(Collectors.toList());
+                            for (Message m : requests) {
+                                if (m.getPosToFree().isEqual(currentPosition)) {
+                                    List<Position> available = getAvailableMoves();
+                                    List<Direction> availableDir = available.stream().map(this::posToDir).collect(Collectors.<Direction>toList());
+                                    if (availableDir.size() > 0) {
+                                        this.move(availableDir.get(0));
+                                        messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
+                                        messageBox.deleteMessage(this.getIdAgent(), m);
+                                        Thread.sleep(WAITING_TIME+0);
+                                    }
+                                } else {
+                                    agentBox.remove(m);
+                                }
+                            }
+                        }
+                        Thread.sleep(WAITING_TIME);
+                        marta.solvePuzzle(this);
+                    }
+                }
+                this.arrive = true;
+                Map.checkLocker();
+                System.out.println(String.format("Agent %d ( %s ) Arrivé et locké", idAgent, name));
+
 
             }catch (Exception e){
                 e.printStackTrace();
+                run();
             }
         }
     }
@@ -297,12 +312,16 @@ public class Agent extends Thread {
     }
 
     private int minDistToBorder(){
-        ArrayList<Integer> integers = new ArrayList<>();
-        integers.add(endPoint.getX());
-        integers.add(endPoint.getY());
-        integers.add((map.getSize() - endPoint.getX()));
-        integers.add((map.getSize() - endPoint.getY()));
-        return integers.stream().mapToInt(i->i).min().getAsInt();
+        ArrayList<Integer> i = new ArrayList<>();
+        i.add(endPoint.getX());
+        i.add(endPoint.getY());
+        i.add((map.getSize()-1 - endPoint.getX()));
+        i.add((map.getSize()-1 - endPoint.getY()));
+        if ((i.get(0).equals(i.get(1)) && i.get(2).equals(i.get(3)))
+                || (i.get(1).equals(i.get(2)) && i.get(0).equals(i.get(3)))){
+            isCorner = true;
+        }
+        return i.stream().mapToInt(integer->integer).min().getAsInt();
     }
 
     /**
@@ -351,5 +370,9 @@ public class Agent extends Thread {
 
     public int getDistToBorder() {
         return distToBorder;
+    }
+
+    public boolean isCorner() {
+        return isCorner;
     }
 }

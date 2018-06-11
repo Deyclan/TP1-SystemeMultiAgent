@@ -64,7 +64,7 @@ public class Algo {
                         .filter(message -> message.getMessageType() == MessageType.RESPONSE).collect(Collectors.toList()).size() <= 0){
 
                 System.out.println(String.format("Agent %d ( %s ) attend une réponse", agent.getIdAgent(), agent.getAgentName()));
-                Thread.sleep(1500);
+                Thread.sleep(150);
             }
             System.out.println(String.format("Agent %d ( %s ) a eu une réponse", agent.getIdAgent(), agent.getAgentName()));
 

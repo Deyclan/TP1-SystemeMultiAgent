@@ -42,9 +42,9 @@ public class Main extends Application {
         */
         String[][] depart = {
                 {"","f","","e"},
-                {"","g","h",""},
-                {"","c","a",""},
-                {"d","","b",""},
+                {"","a","d",""},
+                {"","c","g",""},
+                {"h","","b",""},
         };
 
         String[][] arrivee = {
@@ -79,7 +79,7 @@ public class Main extends Application {
         GridView view = new GridView(MAP);
         System.out.println("View launched");
 
-        MAP.startAgents(153);
+        MAP.startAgents(200);
 /*
         MARTA marta = new MARTA();
         while (!marta.getSolved()){

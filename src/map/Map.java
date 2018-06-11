@@ -11,6 +11,7 @@ public class Map extends Observable {
     private static Map instance;
     private int size;
     public static int distLock = 0;
+    public static boolean cornersOk = false;
 
     private Agent[][] grille;
 
@@ -104,19 +105,36 @@ public class Map extends Observable {
     }
 
     public synchronized static void checkLocker(){
-        boolean everybodylocked = true;
+        boolean areCornersLocked = true;
         for (int x = 0 ; x< instance.size ; x++){
-            for (int y = 0 ; y< instance.size ; y++){
+            for (int y = 0 ; y< instance.size ; y++) {
                 Agent agent = instance.grille[x][y];
-                if (agent != null) {
+                if (agent != null && agent.isCorner()) {
                     if (agent.getDistToBorder() <= distLock && !agent.isArrive()) {
-                        everybodylocked = false;
+                        areCornersLocked = false;
                     }
                 }
             }
         }
-        if (everybodylocked){
-            distLock++;
+        if (areCornersLocked) {
+            cornersOk = true;
+        }
+        if (cornersOk){
+            boolean everybodylocked = true;
+            for (int x = 0; x < instance.size; x++) {
+                for (int y = 0; y < instance.size; y++) {
+                    Agent agent = instance.grille[x][y];
+                    if (agent != null) {
+                        if (agent.getDistToBorder() <= distLock && !agent.isArrive()) {
+                            everybodylocked = false;
+                        }
+                    }
+                }
+            }
+            if (everybodylocked) {
+                distLock++;
+                cornersOk = false;
+            }
         }
     }
 
