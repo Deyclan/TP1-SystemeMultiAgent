@@ -31,8 +31,10 @@ public class Agent extends Thread {
 
     private Random random = new Random();
 
-    private static final int WAITING_TIME = 1000;
+    private static final int WAITING_TIME = 250;
+    private static final int MIN_WAITING_TIME = 100;
     private int waitingTime = WAITING_TIME;
+    private final boolean aleaTime = true;
 
     public Agent(int idAgent, Map map, MessageBox messageBox) {
         this.idAgent = idAgent;
@@ -93,7 +95,11 @@ public class Agent extends Thread {
                                             messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
                                             messageBox.deleteMessage(this.getIdAgent(), m);
                                         }
-                                        Thread.sleep( waitingTime + random.nextInt(waitingTime));
+                                        if (aleaTime) {
+                                            Thread.sleep(MIN_WAITING_TIME + random.nextInt(waitingTime));
+                                        }else {
+                                            Thread.sleep(WAITING_TIME);
+                                        }
                                     }
                                 } else {
                                     synchronized (messageBox) {
@@ -103,7 +109,11 @@ public class Agent extends Thread {
                             }
                         }
                         unLooper++;
-                        Thread.sleep(waitingTime + random.nextInt(waitingTime));
+                        if (aleaTime) {
+                            Thread.sleep(MIN_WAITING_TIME + random.nextInt(waitingTime));
+                        }else {
+                            Thread.sleep(WAITING_TIME);
+                        }
                         if (!hasMoved) {
                             marta.solvePuzzle(this);
                         }
@@ -111,9 +121,6 @@ public class Agent extends Thread {
                     }
                 }
                 else {
-                    synchronized (map){
-
-                    }
                     while (!marta.getSolved() || distToBorder > Map.distLock || !Map.isCornersOk()) {
 
                         if (distToBorder <= Map.distLock){
@@ -140,7 +147,11 @@ public class Agent extends Thread {
                                             messageBox.sendMessage(m.getFrom().getIdAgent(), new Message(this, m.getFrom(), MessageType.RESPONSE, null));
                                             messageBox.deleteMessage(this.getIdAgent(), m);
                                         }
-                                        Thread.sleep(waitingTime + random.nextInt(waitingTime) + 0);
+                                        if (aleaTime) {
+                                            Thread.sleep(MIN_WAITING_TIME + random.nextInt(waitingTime)+0);
+                                        }else {
+                                            Thread.sleep(WAITING_TIME);
+                                        }
                                     }
                                 } else {
                                     synchronized (messageBox) {
@@ -149,17 +160,29 @@ public class Agent extends Thread {
                                 }
                             }
                         }
-                        Thread.sleep(waitingTime + random.nextInt(waitingTime));
+                        if (aleaTime) {
+                            Thread.sleep(MIN_WAITING_TIME + random.nextInt(waitingTime));
+                        }else {
+                            Thread.sleep(WAITING_TIME);
+                        }
                         if (!hasMoved) {
                             marta.solvePuzzle(this);
                         }
                         Thread.sleep(100);
                     }
                 }
-                this.arrive = true;
-                Map.checkLocker();
-                System.out.println(String.format("Agent %d ( %s ) Arrivé et locké", idAgent, name));
+                synchronized (map) {
+                    this.arrive = true;
+                    map.checkLocker();
+                    System.out.println(String.format("Agent %d ( %s ) Arrivé et locké", idAgent, name));
+                }
 
+                while (true){
+                    Thread.sleep(10000);
+                    synchronized (messageBox) {
+                        messageBox.getBox().get(getIdAgent()).clear();
+                    }
+                }
 
             }catch (Exception e){
                 e.printStackTrace();

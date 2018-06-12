@@ -71,7 +71,7 @@ public class StringArrayToMap {
         Color toReturn;
         switch (letter){
             case "a":
-                toReturn = Color.ALICEBLUE;
+                toReturn = Color.AQUAMARINE;
                 break;
             case "b":
                 toReturn = Color.BLUE;
@@ -92,7 +92,7 @@ public class StringArrayToMap {
                 toReturn = Color.GREEN;
                 break;
             case "h":
-                toReturn = Color.HONEYDEW;
+                toReturn = Color.HOTPINK;
                 break;
             case "i":
                 toReturn = Color.INDIGO;
@@ -104,7 +104,7 @@ public class StringArrayToMap {
                 toReturn = Color.KHAKI;
                 break;
             case "l":
-                toReturn = Color.LAVENDER;
+                toReturn = Color.LAWNGREEN;
                 break;
             case "m":
                 toReturn = Color.MAGENTA;
@@ -149,7 +149,8 @@ public class StringArrayToMap {
                 toReturn = Color.AZURE;
                 break;
             default:
-                toReturn = Color.GRAY;
+                Random random = new Random();
+                toReturn = Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255), 1.0);
                 break;
 
         }

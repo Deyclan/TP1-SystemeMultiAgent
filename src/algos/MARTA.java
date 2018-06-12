@@ -24,6 +24,13 @@ public class MARTA {
         costToGoalPosi = new ArrayList<>();
         childPositions = new ArrayList<>();
 
+        if(agent.getCurrentPosition().isEqual(agent.getGoalPosition())) {
+            isSolved = true;
+        }
+        else {
+            isSolved = false;
+        }
+
         //Step 1 [initialize] set sx = si (initial state);
         currentPosi = agent.getCurrentPosition();
         //Step 2 [expansion] expand sx and let C(sx) to be the set of child states
@@ -40,10 +47,12 @@ public class MARTA {
                 }
                 else {
                     Agent agentToMove = agent.getAgentToMove(posi);
-                    MessageBox mb =  agent.getMessageBox();
-                    int idAgentToMove = agentToMove.getIdAgent();
-                    Message messageToSend = new Message(agent, agentToMove, MessageType.REQUEST, posi);
-                    mb.sendMessage(idAgentToMove, messageToSend);
+                    if (agentToMove != null) {
+                        MessageBox mb = agent.getMessageBox();
+                        int idAgentToMove = agentToMove.getIdAgent();
+                        Message messageToSend = new Message(agent, agentToMove, MessageType.REQUEST, posi);
+                        mb.sendMessage(idAgentToMove, messageToSend);
+                    }
                 }
                 return;
             }

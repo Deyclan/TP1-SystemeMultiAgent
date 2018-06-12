@@ -72,24 +72,28 @@ public class GridView extends Stage {
     private void fillPane() {
         grid.getChildren().clear();
         addGridLines();
-        for (int line = 0; line < map.getSize(); line++ ) {
-            for (int col = 0; col < map.getSize(); col++) {
-                if (map.getGrille()[line][col] != null){
-                    Rectangle rectangle = new Rectangle(tailleRect - rectSizeCorrection,tailleRect - rectSizeCorrection);
-                    //rectangle.setX((col*tailleRect)+rectPosCorrection);
-                    //rectangle.setY((line*tailleRect)+rectPosCorrection);
-                    rectangle.setFill(map.getGrille()[line][col].getAgentColor());
-                    if (map.getGrille()[line][col].isArrive()){
-                        rectangle.setStrokeWidth(2);
-                        rectangle.setStroke(Color.RED);
+        synchronized (map){
+            for (int line = 0; line < map.getSize(); line++ ) {
+                for (int col = 0; col < map.getSize(); col++) {
+                    if (map.getGrille()[line][col] != null){
+                        Rectangle rectangle;
+                        if (map.getGrille()[line][col].isArrive()){
+                            rectangle = new Rectangle(tailleRect - rectSizeCorrection-4,tailleRect - rectSizeCorrection-4);
+                            rectangle.setFill(map.getGrille()[line][col].getAgentColor());
+                            rectangle.setStrokeWidth(4);
+                            rectangle.setStroke(Color.RED);
+                        }else {
+                            rectangle = new Rectangle(tailleRect - rectSizeCorrection,tailleRect - rectSizeCorrection);
+                            rectangle.setFill(map.getGrille()[line][col].getAgentColor());
+                        }
+                        Text text = new Text(map.getGrille()[line][col].getAgentName());
+                        text.setFont(Font.font(20)); // TODO : Faire une font size qui s'adapte à la taille de la grille
+                        StackPane stackPane = new StackPane();
+                        stackPane.setLayoutX((col*tailleRect)+rectPosCorrection);
+                        stackPane.setLayoutY((line*tailleRect)+rectPosCorrection);
+                        stackPane.getChildren().addAll(rectangle, text);
+                        grid.getChildren().addAll(stackPane);
                     }
-                    Text text = new Text(map.getGrille()[line][col].getAgentName());
-                    text.setFont(Font.font(20)); // TODO : Faire une font size qui s'adapte à la taille de la grille
-                    StackPane stackPane = new StackPane();
-                    stackPane.setLayoutX((col*tailleRect)+rectPosCorrection);
-                    stackPane.setLayoutY((line*tailleRect)+rectPosCorrection);
-                    stackPane.getChildren().addAll(rectangle, text);
-                    grid.getChildren().addAll(stackPane);
                 }
             }
         }

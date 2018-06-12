@@ -16,12 +16,14 @@ public class Map extends Observable {
     private Agent[][] grille;
 
     private Map(int size){
-        this.size = size;
-        grille = new Agent[size][size];
-        // Création de la grille vide
-        for (int x=0; x < size ; x++){
-            for (int y=0; y<size ; y++){
-                grille[x][y] = null;
+        synchronized (this) {
+            this.size = size;
+            grille = new Agent[size][size];
+            // Création de la grille vide
+            for (int x = 0; x < size; x++) {
+                for (int y = 0; y < size; y++) {
+                    grille[x][y] = null;
+                }
             }
         }
     }
@@ -54,7 +56,7 @@ public class Map extends Observable {
         Agent current = getPosition(agentCurrentPos);
         Agent dest = getPosition(agentDestPos);
         if (dest !=null){
-            System.out.println("ERROR : Destination not empty. Can't Move");
+            //System.out.println("ERROR : Destination not empty. Can't Move");
             return false;
         }
         setPosition(agentDestPos, current);
@@ -104,7 +106,7 @@ public class Map extends Observable {
         }
     }
 
-    public synchronized static void checkLocker(){
+    public synchronized void checkLocker(){
         boolean areCornersLocked = true;
         for (int x = 0 ; x< instance.size ; x++){
             for (int y = 0 ; y< instance.size ; y++) {
@@ -136,6 +138,8 @@ public class Map extends Observable {
                 cornersOk = false;
             }
         }
+        setChanged();
+        notifyObservers();
     }
 
     public synchronized static boolean isCornersOk(){
